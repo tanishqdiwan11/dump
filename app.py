@@ -110,6 +110,7 @@ def attack():
     target_mac = request.form.get('target_mac', '')  # Get the target MAC address from the form input
     target_channel = request.form.get('target_channel', '')  # Get the target channel from the form input
     result=""
+    output=""
     if request.method == 'POST' and target_mac:
         # Execute the deauthentication attack command
         deauth_command = ['aireplay-ng', '--deauth', '0', '-a', target_mac, interface]
