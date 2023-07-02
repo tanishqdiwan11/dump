@@ -99,7 +99,7 @@ def wireless_adapter_status():
 @app.route('/attack', methods=['GET', 'POST'])
 def attack():
     # Deauthentication attack logic
-    interface = 'wlp0s20f0u2'  # Replace 'wlan0' with your wireless adapter name
+    interface = 'wlan1'  # Replace 'wlan0' with your wireless adapter name
     target_mac = request.form.get('target_mac', '')  # Get the target MAC address from the form input
     result=""
     if request.method == 'POST' and target_mac:
