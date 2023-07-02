@@ -38,15 +38,22 @@ def get_network_interfaces():
     interfaces = [line.strip(':') for line in interface_lines]
     return interfaces
 
-def packet_capture(interface):
+def capture_packets(interface):
     capture = pyshark.LiveCapture(interface=interface)
+    packet_counter = 0
     for packet in capture.sniff_continuously():
         packet_data = {
             'time': packet.frame_info.time,
             'source': packet.ip.src if 'ip' in packet else '',
             'destination': packet.ip.dst if 'ip' in packet else '',
+            'protocol': packet.layers[0]._layer_name if packet.layers else ''
         }
         socketio.emit('packet', packet_data, namespace='/')
+
+        packet_counter += 1
+        if packet_counter >= 100:
+            break
+
 
 @socketio.on('connect')
 def handle_connect():
