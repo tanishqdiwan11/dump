@@ -51,8 +51,9 @@ def capture_packets(interface):
         socketio.emit('packet', packet_data, namespace='/')
 
         packet_counter += 1
-        if packet_counter >= 100:
+        if packet_counter >= 25:
             break
+        time.sleep(0.5)
 
 
 @socketio.on('connect')
