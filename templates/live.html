@@ -85,6 +85,7 @@
                 row.append($('<td>').text(packet.time));
                 row.append($('<td>').text(packet.source));
                 row.append($('<td>').text(packet.destination));
+                row.append($('<td>').text(packet.protocol));
                 $('#packet-table').append(row);
             });
 
@@ -113,6 +114,7 @@
                 <th>Time</th>
                 <th>Source</th>
                 <th>Destination</th>
+                <th>Protocol</th>
             </tr>
         </thead>
         <tbody>
