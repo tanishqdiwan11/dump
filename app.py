@@ -62,7 +62,7 @@ def handle_connect():
 @socketio.on('start_capture')
 def handle_start_capture(interface):
     print(f'Starting packet capture for interface: {interface}')
-    socketio.start_background_task(packet_capture, interface)
+    socketio.start_background_task(capture_packets, interface)
 
 
 @app.route("/config", methods=["GET", "POST"])
