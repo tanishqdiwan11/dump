@@ -16,10 +16,6 @@ current_interface = None
 capture = None
 
 @app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/home")
 def home():
     # Run the neofetch command and capture its output
     output = subprocess.check_output(['neofetch', '--stdout'])
@@ -72,13 +68,13 @@ def config():
             command = [
                 "airmon-ng",
                 "start",
-                "wlp0s20f0u3",
+                "wlan1",
             ]  # Replace 'wlan0' with your wireless adapter name
         elif mode == "managed":
             command = [
                 "airmon-ng",
                 "stop",
-                "wlp0s20f0u3",
+                "wlan1",
             ]  # Replace 'wlan0' with your wireless adapter name
         else:
             return render_template("config.html", result="wrong mode")
@@ -93,16 +89,17 @@ def config():
 
 
 @app.route("/status")
-def status():
-    # Logic to retrieve the current status of the wireless adapter
-    # Capture the output and pass it to the template
-    adapter_status = "Monitor mode"
+def wireless_adapter_status():
+    # Check if wireless adapter is in monitor or managed mode
+    output = subprocess.check_output(['sudo','iwconfig', 'wlan1']).decode('utf-8')
+    adapter_status = re.findall(r'Mode:(.*?)  ', output, re.MULTILINE)[0]
+
     return render_template("status.html", adapter_status=adapter_status)
 
 @app.route('/attack', methods=['GET', 'POST'])
 def attack():
     # Deauthentication attack logic
-    interface = 'wlp0s20f0u2'  # Replace 'wlan0' with your wireless adapter name
+    interface = 'wlan1'  # Replace 'wlan0' with your wireless adapter name
     target_mac = request.form.get('target_mac', '')  # Get the target MAC address from the form input
     result=""
     if request.method == 'POST' and target_mac:
@@ -120,7 +117,7 @@ def attack():
 @app.route('/run_airodump', methods=['POST'])
 def run_airodump():
     # Run airodump-ng command for 25 seconds
-    command = ['sudo', 'airodump-ng', '-w', 'airodump_output', '--output-format', 'csv', 'wlp0s20f0u3']
+    command = ['sudo', 'airodump-ng', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     time.sleep(25)
     process.terminate()
