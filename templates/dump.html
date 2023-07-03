@@ -29,11 +29,11 @@
         th, td {
             padding: 8px;
             text-align: left;
-            border: 1px solid black;
+            border: 2px solid black;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #8d8787;
         }
         }
       </style>
@@ -75,9 +75,11 @@
 </head>
 <body>
     <h1>Airodump-ng Interface</h1>
+    <h3>Please wait for atleast 30 seconds for the scan to complete</h3>
     <form action="/dump" method="post">
         <input type="submit" value="Run Airodump-ng">
     </form>
+    
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
