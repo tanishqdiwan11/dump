@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Packet Capture</title>
+</head>
+<body>
+    <h1>Packet Capture</h1>
+    <div>
+        <form action="/start_capture" method="get">
+            <button type="submit">Start Capture</button>
+        </form>
+        <form action="/stop_capture" method="get">
+            <button type="submit">Stop Capture</button>
+        </form>
+    </div>
+    <div>
+        <h2>Captured Packets:</h2>
+        <ul>
+            {% for packet in captured_packets %}
+                <li>{{ packet }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
