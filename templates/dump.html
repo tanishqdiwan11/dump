@@ -21,6 +21,20 @@
         nav a.active {
           background-color: #4CAF50;
           color: white;
+          table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
         }
       </style>
       </head>
@@ -36,7 +50,7 @@
         <a href="/attack">Attack</a>
         <a class="active" href="/dump">Dump</a>
       </nav>   
-    <title>Upload CSV</title>
+    <title>AiroDump Output</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function showCSV() {
@@ -61,27 +75,27 @@
 </head>
 <body>
     <h1>Airodump-ng Interface</h1>
-    <form action="/run_airodump" method="post">
+    <form action="/dump" method="post">
         <input type="submit" value="Run Airodump-ng">
     </form>
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
-    <h1>Upload a CSV file</h1>
-    {% if success_message %}
-        <p>{{ success_message }}</p>
-    {% endif %}
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="csv_file" accept=".csv" required>
-        <input type="submit" value="Upload">
-    </form>
     {% if csv_data %}
         {% if show_csv_button %}
             <button onclick="showCSV()">Show CSV File</button>
         {% endif %}
         <div id="csv-content" {% if not show_csv_button %}style="display: block;"{% endif %}>
             <h2>CSV Content</h2>
-            <table id="csv-table"></table>
+            <table id="csv-table">
+                {% for row in csv_data %}
+                    <tr>
+                        {% for cell in row %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     {% endif %}
 </body>

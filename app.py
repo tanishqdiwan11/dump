@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request , jsonify
+from flask import Flask, render_template, request , jsonify, make_response
 import subprocess
 import re
 import pyshark
 from flask_socketio import SocketIO
 import time
 import csv
-
+import glob
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -132,53 +133,52 @@ def attack():
     
     return render_template("attack.html", result=result, output=output)
 
-@app.route('/run_airodump', methods=['POST'])
-def run_airodump():
-    # Run airodump-ng command for 25 seconds
-    command = ['sudo', 'airodump-ng', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(25)
-    process.terminate()
-
-    message = 'Airodump CSV file has been generated.'
-
-    # Read the generated CSV file
-    global csv_data
-    csv_data = []
-    with open('airodump_output-01.csv', 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            csv_data.append(row)
-
-    return render_template('dump.html', message=message, show_csv_button=True)
-
-
 @app.route('/dump', methods=['GET', 'POST'])
-def upload_csv():
+def dump():
     global csv_data
 
     if request.method == 'POST':
-        # Check if a file was uploaded
-        if 'csv_file' not in request.files:
-            return 'No file uploaded'
+        # Run airodump-ng command for 25 seconds
+        command = ['sudo', 'airodump-ng', '--manufacturer', '--wps', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        countdown = 25
 
-        file = request.files['csv_file']
+        while countdown > 0:
+            time.sleep(1)
+            countdown -= 1
 
-        # Check if the file has a valid extension
-        if file.filename == '':
-            return 'No file selected'
-        if not file.filename.endswith('.csv'):
-            return 'Invalid file format. Please upload a CSV file.'
+        process.terminate()
 
-        # Read the CSV file
+        message = 'Airodump CSV file has been generated.'
+
+        # Read the generated CSV file
         csv_data = []
-        csv_reader = csv.reader(file.read().decode('utf-8').splitlines())
-        for row in csv_reader:
-            csv_data.append(row)
+        csv_files = glob.glob('*.csv')
 
-        return render_template('dump.html', success_message='File has been uploaded.', csv_data=csv_data, show_csv_button=True)
+        # Sort the files by their creation time in descending order
+        csv_files.sort(key=os.path.getctime, reverse=True)
 
-    return render_template('dump.html', csv_data=csv_data)
+        # Select the most recent .csv file
+        if csv_files:
+            most_recent_csv = csv_files[0]
+
+            # Open the most recent .csv file
+            with open(most_recent_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                for row in csv_reader:
+                    csv_data.append(row)
+        else:
+            # Handle the case when no .csv files are found
+            print("No .csv files found in the current directory.")
+
+        response = make_response(render_template('dump.html', message=message, csv_data=csv_data, show_csv_button=True))
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
+
+    return render_template('dump.html', csv_data=csv_data, show_csv_button=True)
+
 
 
 @app.route('/show_csv')
