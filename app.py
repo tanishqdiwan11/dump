@@ -98,9 +98,9 @@ def config():
 
 
 @app.route("/status")
-def wireless_adapter_status():
+def status():
     # Check if wireless adapter is in monitor or managed mode
-    output = subprocess.check_output(['iwconfig', 'wlan1']).decode('utf-8')
+    output = subprocess.check_output(['iwconfig', 'wlp0s20f3']).decode('utf-8')
     adapter_status = re.findall(r'Mode:(.*?)  ', output, re.MULTILINE)[0]
 
     return render_template("status.html", adapter_status=adapter_status)

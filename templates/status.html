@@ -87,24 +87,11 @@
 <nav>
   <a href="/">Home</a>
   <a href="/live">Live</a>
-  <a href="/deauth">Deauth</a>
   <a href="/config">Config</a>
   <a class="active" href="/status">Status</a>
   <a href="/attack">Attack</a>
-  <a href="/dump">Dump</a>
 </nav>
-
-<h2>Wireless Config</h2>
-<form method="POST" action="/config">
-  <label for="mode">Select Mode:</label>
-  <select name="mode" id="mode">
-    <option value="monitor">Monitor Mode</option>
-    <option value="managed">Managed Mode</option>
-  </select>
-  <br>
-  <input type="submit" value="Apply">
-</form>
-<br>
-<p>{{ result }}</p>
+  <h1>Wireless Status</h1>
+  <p>Adapter Status: {{ adapter_status }}</p>
 </body>
 </html>
