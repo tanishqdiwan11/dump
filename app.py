@@ -188,6 +188,5 @@ def show_csv():
 
     return jsonify(csv_data)
 
-
 if __name__ == "__main__":
     socketio.run(app)
