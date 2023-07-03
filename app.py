@@ -139,7 +139,7 @@ def dump():
 
     if request.method == 'POST':
         # Run airodump-ng command for 25 seconds
-        command = ['sudo', 'airodump-ng', '--manufacturer','--wps','-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
+        command = ['sudo', 'airodump-ng', '--manufacturer', '--wps', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         countdown = 25
 
@@ -155,20 +155,20 @@ def dump():
         csv_data = []
         csv_files = glob.glob('*.csv')
 
-# Sort the files by their creation time in descending order
+        # Sort the files by their creation time in descending order
         csv_files.sort(key=os.path.getctime, reverse=True)
 
-# Select the most recent .csv file
+        # Select the most recent .csv file
         if csv_files:
-             most_recent_csv = csv_files[0]
-    
-    # Open the most recent .csv file
-    with open(most_recent_csv, 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            csv_data.append(row)
+            most_recent_csv = csv_files[0]
+
+            # Open the most recent .csv file
+            with open(most_recent_csv, 'r') as file:
+                csv_reader = csv.reader(file)
+                for row in csv_reader:
+                    csv_data.append(row)
         else:
-    # Handle the case when no .csv files are found
+            # Handle the case when no .csv files are found
             print("No .csv files found in the current directory.")
 
         response = make_response(render_template('dump.html', message=message, csv_data=csv_data, show_csv_button=True))
@@ -178,6 +178,8 @@ def dump():
         return response
 
     return render_template('dump.html', csv_data=csv_data)
+
+
 
 @app.route('/show_csv')
 def show_csv():
