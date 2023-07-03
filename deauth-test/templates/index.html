@@ -2,6 +2,15 @@
 <html>
 <head>
     <title>Packet Capture</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        const socket = io('/capture');
+        socket.on('packet', function(packet) {
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode(packet));
+            document.getElementById('packetList').appendChild(li);
+        });
+    </script>
 </head>
 <body>
     <h1>Packet Capture</h1>
@@ -15,11 +24,7 @@
     </div>
     <div>
         <h2>Captured Packets:</h2>
-        <ul>
-            {% for packet in captured_packets %}
-                <li>{{ packet }}</li>
-            {% endfor %}
-        </ul>
+        <ul id="packetList"></ul>
     </div>
 </body>
 </html>
