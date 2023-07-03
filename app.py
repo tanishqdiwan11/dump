@@ -132,50 +132,38 @@ def attack():
     
     return render_template("attack.html", result=result, output=output)
 
-@app.route('/run_airodump', methods=['POST'])
-def run_airodump():
-    # Run airodump-ng command for 25 seconds
-    command = ['sudo', 'airodump-ng', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    countdown = 25
-
-    while countdown > 0:
-        time.sleep(1)
-        countdown -= 1
-
-    process.terminate()
-
-    message = 'Airodump CSV file has been generated.'
-
-    # Read the generated CSV file
-    global csv_data
-    csv_data = []
-    with open('airodump_output-01.csv', 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            csv_data.append(row)
-
-    return render_template('dump.html', message=message, show_csv_button=True)
-
 @app.route('/dump', methods=['GET', 'POST'])
-def upload_csv():
+def dump():
     global csv_data
 
     if request.method == 'POST':
-        # Read the CSV file directly
-        csv_data = []
-        csv_reader = csv.reader(request.stream.read().decode('utf-8').splitlines())
-        for row in csv_reader:
-            csv_data.append(row)
+        # Run airodump-ng command for 25 seconds
+        command = ['sudo', 'airodump-ng', '-w', 'airodump_output', '--output-format', 'csv', 'wlan1']
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        countdown = 25
 
-        response = make_response(render_template('dump.html', success_message='File has been uploaded.', csv_data=csv_data, show_csv_button=True))
+        while countdown > 0:
+            time.sleep(1)
+            countdown -= 1
+
+        process.terminate()
+
+        message = 'Airodump CSV file has been generated.'
+
+        # Read the generated CSV file
+        csv_data = []
+        with open('airodump_output-01.csv', 'r') as file:
+            csv_reader = csv.reader(file)
+            for row in csv_reader:
+                csv_data.append(row)
+
+        response = make_response(render_template('dump.html', message=message, csv_data=csv_data, show_csv_button=True))
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
         return response
 
     return render_template('dump.html', csv_data=csv_data)
-
 
 @app.route('/show_csv')
 def show_csv():
