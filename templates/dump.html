@@ -66,10 +66,6 @@
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
-    <h1>Upload a CSV file</h1>
-    {% if success_message %}
-        <p>{{ success_message }}</p>
-    {% endif %}
     {% if csv_data %}
         {% if show_csv_button %}
             <button onclick="showCSV()">Show CSV File</button>
