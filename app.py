@@ -177,7 +177,7 @@ def dump():
         response.headers['Expires'] = '0'
         return response
 
-    return render_template('dump.html', csv_data=csv_data)
+    return render_template('dump.html', csv_data=csv_data, show_csv_button=True)
 
 
 
