@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <h1>Packet Capture</h1>
     <title>Packet Capture</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -105,27 +104,37 @@
     </script>
 </head>
 <body>
-    <h1>Packet Capture</h1>
-    <form method="POST" action="/">
-        <label for="interface-select">Select Interface:</label>
-        <select id="interface-select" name="interface">
-            {% for interface in interfaces %}
-                <option value="{{ interface }}" {% if selected_interface == interface %}selected{% endif %}>{{ interface }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Start Capture</button>
-    </form>
-    <table id="packet-table">
-        <thead>
-            <tr>
-                <th>Time</th>
-                <th>Source</th>
-                <th>Destination</th>
-                <th>Protocol</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+<h1>WiFi Testing Interface</h1>
+<nav>
+    <a href="/">Home</a>
+    <a class="active" href="/live">Live</a>
+    <a href="/deauth">Deauth</a>
+    <a href="/config">Config</a>
+    <a href="/status">Status</a>
+    <a href="/attack">Attack</a>
+    <a href="/dump">Dump</a>
+</nav>
+<h2>Packet Capture</h2>
+<form method="POST" action="/">
+    <label for="interface-select">Select Interface:</label>
+    <select id="interface-select" name="interface">
+        {% for interface in interfaces %}
+            <option value="{{ interface }}" {% if selected_interface == interface %}selected{% endif %}>{{ interface }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Start Capture</button>
+</form>
+<table id="packet-table">
+    <thead>
+    <tr>
+        <th>Time</th>
+        <th>Source</th>
+        <th>Destination</th>
+        <th>Protocol</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 </body>
 </html>
